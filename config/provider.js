@@ -2,18 +2,18 @@
 
 const sprintf = require(`sprintf-js`).sprintf
     , fs = require(`fs`)
+    , ConfigParameter = require(`./parameter`)
 ;
 
 let runtimeConfig = {}
     , configLoaded = false
-    , runtimeConfigDir = __dirname + `/..`
 ;
 
 module.exports = class ConfigProvider {
     /**
      * Returns current value of config parameter
      * @param {string} name Name of config parameter.
-     * @return {*|null} Value of config parameter or null if parameter doesn't exists.
+     * @return {*|undefined} Value of config parameter or undefined if parameter doesn't exists.
      */
     static get(name) {
         ConfigProvider.load();
@@ -21,7 +21,7 @@ module.exports = class ConfigProvider {
         if (name in runtimeConfig) {
             return runtimeConfig[name];
         } else {
-            return null;
+            return undefined;
         }
     }
 
@@ -34,10 +34,16 @@ module.exports = class ConfigProvider {
         if (false === (name in runtimeConfig)) {
             return;
         }
-        if (null === value || undefined === value) {
+        if (undefined === value) {
             delete runtimeConfig[name];
         } else {
-            runtimeConfig[name] = value;
+            switch (name) {
+                case ConfigParameter.WEIGHT:
+                case ConfigParameter.MIN_POST_AGE:
+                case ConfigParameter.MAX_POST_AGE:
+                    runtimeConfig[name] = value;
+                    break;
+            }
         }
         ConfigProvider.dump();
     }
@@ -63,14 +69,6 @@ module.exports = class ConfigProvider {
     }
 
     /**
-     * Resets current config values
-     */
-    static reset() {
-        runtimeConfig = {};
-        configLoaded = false;
-    }
-
-    /**
      * Stores current config parameters to file
      */
     static dump() {
@@ -87,24 +85,16 @@ module.exports = class ConfigProvider {
     }
 
     /**
-     * Changes runtime directory where config files should be located
-     * @param {string} dir Path to directory.
-     */
-    static setRuntimeDir(dir) {
-        runtimeConfigDir = dir;
-    }
-
-    /**
      * Provides path to config file
      * @param {boolean} runtime Specifies which config file path returns, runtime or not.
      * @return {string} Path to config file.
      */
     static getConfigPath(runtime = true) {
-        const configPath = __dirname + `/../config.json`;
+        let configPath = __dirname + `/../config.json`;
         if (runtime) {
             const config = require(configPath);
 
-            return sprintf(`%s/%s`, runtimeConfigDir, config.runtimeConfigFile);
+            return sprintf(__dirname + `/../%s`, config.runtimeConfigFile);
         } else {
             return configPath;
         }
