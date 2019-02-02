@@ -1,0 +1,45 @@
+{
+  "name": "test-vote-bot",
+  "version": "0.1.0",
+  "description": "A bot, which vote for Weku posts in Discord.",
+  "main": "bot.js",
+  "scripts": {
+    "test": "NODE_ENV=test NODE_PATH=$PWD mocha --recursive -r chai/register-should",
+    "start": "NODE_ENV=dev NODE_PATH=$PWD node bot.js",
+    "postinstall": "npm update && node deploy.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:Sohel12/test-vote-bot.git"
+  },
+  "keywords": [
+    "weku",
+    "discord",
+    "votebot"
+  ],
+  "author": "Serhiy Walker <zavzyat@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@sentry/node": "^4.4.2",
+    "@steemit/steem-js": "^0.7.3",
+    "better-validator": "^2.1.8",
+    "chain-tools-js": "github:zavz9t/chain-tools-js",
+    "chrono-node": "^1.3.5",
+    "discord.js": "^11.4.2",
+    "eventemitter3": "^3.1.0",
+    "fs-readfile-promise": "^3.0.1",
+    "moment": "^2.23.0",
+    "sprintf-js": "^1.1.2",
+    "url-parse": "^1.4.4"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "faker": "^4.1.0",
+    "mocha": "^5.2.0",
+    "mock-require": "^3.0.2",
+    "sinon": "^7.2.2"
+  },
+  "engines": {
+    "node": "10.x"
+  }
+}
